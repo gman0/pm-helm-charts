@@ -1,0 +1,44 @@
+{{- if .Values.providers.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.entity.name" . }}-providers
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.providers.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "common.entity.name" . }}-providers
+  template:
+    metadata:
+      labels:
+        app: {{ include "common.entity.name" . }}-providers
+        control-plane: provider-controller
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: {{ include "common.entity.name" . }}-providers
+      containers:
+      - name: {{ include "common.entity.name" . }}-providers
+        image: {{ include "common.image" . }}
+        {{- include "common.imagePullPolicy" . | indent 8 }}
+        {{- include "common.container.securityContext" . | indent 8 }}
+        {{- include "common.healthAndReadiness" . | indent 8 }}
+        args:
+          - providers
+          - --kcp-url={{ .Values.providers.kcp.url }}
+          - --kcp-namespace={{ .Values.providers.kcp.namespace }}
+          - --kcp-front-proxy-name={{ .Values.providers.kcp.frontProxyName }}
+          - --kcp-front-proxy-port={{ .Values.providers.kcp.frontProxyPort }}
+          - --kcp-cluster-admin-secret-name={{ .Values.providers.kcp.clusterAdminSecretName }}
+          - --providers-apiexport-endpointslice-name={{ .Values.providers.apiExportEndpointSliceName }}
+          - --providers-apiexport-endpointslice-workspace={{ .Values.providers.apiExportEndpointSliceWorkspace }}
+          {{- include "common.observabilityArgs" . | indent 10 }}
+        ports:
+          {{- include "common.PortsMetricsHealth" . | nindent 10 }}
+        env:
+          {{- include "common.basicEnvironment" . | nindent 10 }}
+      terminationGracePeriodSeconds: {{ include "common.terminationGracePeriodSeconds" . }}
+{{- end }}
