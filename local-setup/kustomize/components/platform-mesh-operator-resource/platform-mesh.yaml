@@ -18,6 +18,15 @@ spec:
   - name: feature-disable-email-verification
   - name: feature-accounts-in-accounts
   values:
+    platform-mesh-operator:
+      values:
+        log:
+          noJson: true
+        providers:
+          log:
+            noJson: true
+          hostAliases:
+            enabled: true
     account-operator:
       values:
         hostAliases:
@@ -61,11 +70,10 @@ spec:
             serviceAccount:
               enabled: true
           image:
-            tag: "v0.31.0" # bump kcp image to work around WatchList issues
+            tag: "097afc12c" # bump kcp image to work around WatchList issues
           shards: []
           frontProxy:
             clusterIP: "10.96.0.100"
-            port: 8443
         traefik:
           accessControlAllowOriginList:
           - "http://localhost:4200"
@@ -151,8 +159,8 @@ spec:
           auth:
             postgresPassword: password
             database: postgres
-          image:
-            repository: upstream-images/postgresql
+    marketplace-ui:
+      enabled: false
     terminal-controller-manager:
       enabled: false
     rebac-authz-webhook:
@@ -185,7 +193,3 @@ spec:
       external: true
     kcp:
       external: true
-    virtual-workspaces:
-      values:
-        deployment:
-          serverUrl: https://frontproxy-front-proxy.platform-mesh-system:8443
