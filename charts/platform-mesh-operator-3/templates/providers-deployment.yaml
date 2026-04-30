@@ -38,6 +38,9 @@ spec:
           {{- include "common.leaderElectArg" . | indent 10 }}
           {{- include "common.observabilityArgs" . | nindent 10 }}
           {{- include "common.collectorArgs" . | nindent 10 }}
+          {{- with .Values.providers.extraArgs }}
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
         ports:
           {{- include "common.PortsMetricsHealth" . | nindent 10 }}
         env:

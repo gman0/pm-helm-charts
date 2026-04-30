@@ -27,6 +27,7 @@ tracing:
 
 extraArgs:
   - --subroutines-feature-toggles-enabled=true
+  - --kcp-front-proxy-port=8443 # TODO: remove
 
 idp:
   registrationAllowed: false
@@ -56,18 +57,5 @@ providers:
   # -- Enables the providers controller deployment
   enabled: true # TODO: should default to false
   replicas: 1
-  # kcp:
-  #   # -- Full KCP URL (overrides front-proxy-based URL construction when set)
-  #   url: ""
-  #   # -- Namespace where the KCP front-proxy service lives
-  #   namespace: "platform-mesh-system"
-  #   # -- Name of the KCP front-proxy service (without namespace suffix)
-  #   frontProxyName: "frontproxy"
-  #   # -- Port of the KCP front-proxy service
-  #   frontProxyPort: "6443"
-  #   # -- Name of the Secret containing the KCP cluster-admin client certificate
-  #   clusterAdminSecretName: "kcp-cluster-admin-client-cert"
-  # # -- Name of the APIExportEndpointSlice to watch for provider virtual workspace URLs
-  # apiExportEndpointSliceName: "providers.platform-mesh.io"
-  # # -- KCP workspace path containing the APIExportEndpointSlice
-  # apiExportEndpointSliceWorkspace: "root:providers"
+  extraArgs: # TODO: remove
+    - --kcp-front-proxy-port=8443
